@@ -1,0 +1,41 @@
+******** Stored Procedure **************************
+*********** Vamshi Krishna Kunurur ******************
+
+1)
+
+CREATE TABLE empShifts (
+  staff NUMBER CONSTRAINT pk_staff PRIMARY KEY,
+  wardno NUMBER NOT NULL,
+  shift VARCHAR2(15) CONSTRAINT ck_shift CHECK (shift = 'Morning' OR shift = 'AfterNoon')
+);
+
+2. Stored Procedure)
+
+create or replace procedure InsertShift(sno number,wno number,shift char,status out varchar)
+as
+Begin
+insert into empShifts Values(sno,wno,shift);
+status:='1 row inserted';
+exception
+When others then
+if instr(SQLERRM,'PK_STAFFNO')>0 then
+status:='Cannot have dupicated data';
+elsif instr(SQLERRM,'CHK_SHIFT')>0 then 
+status:='Shift should be only Morning or AfterNoon';
+end if;
+
+end;
+/
+
+3. Extract)
+create or replace procedure shiftExtract(row out sys_refcursor)
+as
+begin
+open row for select * from empShifts;
+end;
+/
+
+
+
+
+
